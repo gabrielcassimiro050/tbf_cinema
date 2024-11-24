@@ -1,10 +1,11 @@
 package Salas;
 
 import Connections.Conexao;
-import DAOs.MasterDAO;
 import DAOs.SalaDAO;
+import Exceptions.SalaOcupadaException;
 import Filmes.Filme;
 import Sessoes.Sessao;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,13 +14,28 @@ public class Sala {
     private int id;
     private String nome;
     private int capacidade;
+    private int id_cinema;
     private ArrayList<Sessao> sessoes;
-    private static SalaDAO salaDAO;
+    public static SalaDAO salaDAO;
 
-    public Sala(String nome, int capacidade) {
+    public Sala(int id, String nome, int capacidade, int id_cinema) {
+        this.id = id;
         this.nome = nome;
         this.capacidade = capacidade;
+        this.id_cinema = id_cinema;
         this.sessoes = new ArrayList<>();
+    }
+
+    public int getId_cinema() {
+        return id_cinema;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -38,15 +54,19 @@ public class Sala {
         this.capacidade = capacidade;
     }
 
-    public static ArrayList<Sala> listarSalas(){
-        return ;
-    }
 
-    public void criarSessao(int id, Sala sala, Filme filme, Date data) {
-        Sessao sessao = new Sessao(id, sala, filme, data);
+
+    public void criarSessao(int id, Sala sala, Filme filme, Date data, Date horarioFim) throws SalaOcupadaException {
+        for (Sessao s : sessoes) {
+            if (data.before(s.getHorarioFim()) && horarioFim.after(s.getData())) {
+                throw new SalaOcupadaException("Horário da sessão conflitante com outra sessão na sala.");
+            }
+        }
+
+        Sessao sessao = new Sessao(id, sala, filme, data, horarioFim);
         sessoes.add(sessao);
 
-        String sql = "INSERT INTO sessoes (id, sala_nome, filme_id, data) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO sessoes (id, sala_nome, filme_id, data, horario_fim) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Conexao.obtemConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -54,6 +74,7 @@ public class Sala {
             stmt.setString(2, sala.getNome());
             stmt.setInt(3, filme.getId());
             stmt.setTimestamp(4, new Timestamp(data.getTime()));
+            stmt.setTimestamp(5, new Timestamp(horarioFim.getTime()));
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -75,5 +96,4 @@ public class Sala {
     public String toString() {
         return "Nome: " + nome + '\n' + "Capacidade: " + capacidade + '\n';
     }
-
 }

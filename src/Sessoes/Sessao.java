@@ -1,6 +1,5 @@
 package Sessoes;
 
-import DAOs.SessaoDAO;
 import Salas.Sala;
 import Filmes.Filme;
 import java.util.Date;
@@ -9,14 +8,15 @@ public class Sessao {
     private int id;
     private Sala sala;
     private Filme filme;
-    private Date data;
-    private SessaoDAO sessaoDAO;
+    private Date data; // Horário de início
+    private Date horarioFim; // Horário de término
 
-    public Sessao(int id, Sala sala, Filme filme, Date data){
+    public Sessao(int id, Sala sala, Filme filme, Date data, Date horarioFim) {
         this.id = id;
         this.sala = sala;
         this.filme = filme;
         this.data = data;
+        this.horarioFim = horarioFim;
     }
 
     public int getId() {
@@ -39,9 +39,24 @@ public class Sessao {
         return data;
     }
 
-    public String toString(){
-        return "ID: "+this.id+'\n'+"Nome: "+this.sala.getNome()+'\n'+"Filmes.Filme: "+this.filme.getNome()+'\n';
+    public void setData(Date data) {
+        this.data = data;
     }
 
+    public Date getHorarioFim() {
+        return horarioFim;
+    }
 
+    public void setHorarioFim(Date horarioFim) {
+        this.horarioFim = horarioFim;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.id + '\n' +
+                "Sala: " + this.sala.getNome() + '\n' +
+                "Filme: " + this.filme.getNome() + '\n' +
+                "Início: " + this.data + '\n' +
+                "Término: " + this.horarioFim + '\n';
+    }
 }

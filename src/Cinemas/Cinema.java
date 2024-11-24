@@ -1,23 +1,17 @@
 package Cinemas;
 
-import Connections.Conexao;
-import DAOs.MasterDAO;
+import DAOs.CinemaDAO;
+import Exceptions.IdExistenteException;
+import Exceptions.NomeDuplicadoException;
 import Salas.Sala;
 
-import java.sql.*;
 import java.util.ArrayList;
 
 public class Cinema {
     private int id;
     private String nome, local;
     private ArrayList<Sala> salas;
-
-    public Cinema(int id, String nome, String local) {
-        this.id = id;
-        this.nome = nome;
-        this.local = local;
-        this.salas = new ArrayList<>();
-    }
+    public static CinemaDAO cinemaDAO;
 
     public int getId() {
         return id;
@@ -31,30 +25,35 @@ public class Cinema {
         return local;
     }
 
-
-
-    public void criarSala(String nome, int capacidade) {
-        Sala novaSala = new Sala(nome, capacidade);
+    public Cinema(int id, String nome, String local) throws IdExistenteException {
+        if (cinemaDAO.buscarPorId(id) != null) {
+            throw new IdExistenteException("Já existe um cinema com o ID " + id + ".");
+        }
+        this.id = id;
+        this.nome = nome;
+        this.local = local;
+        this.salas = new ArrayList<>();
     }
 
+    public void criarSala(int id, String nome, int capacidade) throws NomeDuplicadoException {
+        for (Sala sala : salas) {
+            if (sala.getNome().equalsIgnoreCase(nome)) {
+                throw new NomeDuplicadoException("Já existe uma sala com o nome " + nome + " neste cinema.");
+            }
+        }
+        Sala novaSala = new Sala(id, nome, capacidade, this.id);
+        salas.add(novaSala);
+    }
 
     public void listarSalas() {
-        ArrayList<Object> salasDoBanco = salaDAO.buscarTodas();
-
-        if (salasDoBanco == null || salasDoBanco.isEmpty()) {
+        if (salas.isEmpty()) {
             System.out.println("Não há salas cadastradas.");
             return;
         }
-
-        // Imprime as salas
-        for (Object obj : salasDoBanco) {
-            if (obj instanceof Sala) {
-                Sala sala = (Sala) obj;
-                System.out.println(sala.toString());
-            }
+        for (Sala sala : salas) {
+            System.out.println(sala.toString());
         }
     }
-
 
     @Override
     public String toString() {

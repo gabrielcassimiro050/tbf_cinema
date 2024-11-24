@@ -11,7 +11,7 @@ public class Filme {
     private int id;
     private String nome;
     private long duracao_s;
-    private FilmeDAO filmeDAO;
+    public static FilmeDAO filmeDAO;
 
     public Filme(int id, String nome, long duracao_s) {
         this.id = id;
