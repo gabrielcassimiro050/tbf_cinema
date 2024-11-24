@@ -9,7 +9,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class SessaoDAO implements MasterDAO<Sessao> {
+public class SessaoDAO implements MasterDAO<Sessao> {
+    private int id;
+    private Sala sala;
+    private Filme filme;
+    private Date data;
+
+    public void criarTabela() {
+        try {
+            Connection conexao = Conexao.obtemConexao();
+
+            Statement stmt = conexao.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS sessoes (id INT PRIMARY KEY," +
+                    "sala_id INT NOT NULL," +
+                    "filme_id INT NOT NULL," +
+                    "data DATE NOT NULL;");
+        } catch (SQLException e) {
+            throw new Error(e.getMessage());
+        }
+    }
 
     @Override
     public Sessao salvar(Sessao sessao) {

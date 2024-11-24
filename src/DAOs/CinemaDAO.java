@@ -3,13 +3,24 @@ package DAOs;
 import Cinemas.Cinema;
 import Connections.Conexao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class CinemaDAO implements MasterDAO<Cinema> {
+
+    @Override
+    public void criarTabela() {
+        try {
+            Connection conexao = Conexao.obtemConexao();
+
+            Statement stmt = conexao.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS cinemas (id INT PRIMARY KEY," +
+                    "nome VARCHAR(255) NOT NULL," +
+                    "local VARCHAR(255) NOT NULL;");
+        } catch (SQLException e) {
+            throw new Error(e.getMessage());
+        }
+    }
 
     @Override
     public Cinema salvar(Cinema objeto) {

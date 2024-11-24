@@ -7,6 +7,24 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public abstract class SalaDAO implements MasterDAO<Sala>{
+    private int id;
+    private String nome;
+    private int capacidade;
+
+    public void criarTabela() {
+        try {
+            Connection conexao = Conexao.obtemConexao();
+
+            Statement stmt = conexao.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS salas (id INT PRIMARY KEY," +
+                    "nome VARCHAR(255) NOT NULL," +
+                    "capacidade INT NOT NULL," +
+                    "cinema_id INT NOT NULL;");
+        } catch (SQLException e) {
+            throw new Error(e.getMessage());
+        }
+    }
+
     public Sala salvar(Sala sala) {
         String sql = "INSERT INTO salas (nome, capacidade) VALUES (?, ?)";
 

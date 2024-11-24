@@ -6,7 +6,21 @@ import Filmes.Filme;
 import java.sql.*;
 import java.util.ArrayList;
 
-public abstract class FilmeDAO implements MasterDAO<Filme>{
+public class FilmeDAO implements MasterDAO<Filme>{
+
+    public void criarTabela() {
+        try {
+            Connection conexao = Conexao.obtemConexao();
+
+            Statement stmt = conexao.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS filmes (id INT PRIMARY KEY," +
+                    "nome VARCHAR(255) NOT NULL," +
+                    "duracao_s FLOAT NOT NULL;");
+        } catch (SQLException e) {
+            throw new Error(e.getMessage());
+        }
+    }
+
     public Filme salvar(Filme filme) {
         String sql = "INSERT INTO filmes (id, nome, duracao_s) VALUES (?, ?, ?)";
 

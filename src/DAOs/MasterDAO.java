@@ -10,4 +10,5 @@ public interface MasterDAO<T> {
     ArrayList<T> buscarTodos();
     void atualizar(T object);
     void deletar(T object);
+    void criarTabela();
 }
