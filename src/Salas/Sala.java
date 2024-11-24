@@ -56,7 +56,8 @@ public class Sala {
 
 
 
-    public void criarSessao(int id, Sala sala, Filme filme, Date data, Date horarioFim) throws SalaOcupadaException {
+    public void criarSessao(int id, Sala sala, Filme filme, Date data) throws SalaOcupadaException {
+        Date horarioFim = new Date(data.getTime() + filme.getDuracao_s() * 1000);
         for (Sessao s : sessoes) {
             if (data.before(s.getHorarioFim()) && horarioFim.after(s.getData())) {
                 throw new SalaOcupadaException("Horário da sessão conflitante com outra sessão na sala.");
