@@ -1,5 +1,7 @@
 package Cinemas;
 
+import static Main.Main.cinemaDAO;
+
 public class Cineart extends Cinema {
     private static Cineart instancia;
 
@@ -11,6 +13,7 @@ public class Cineart extends Cinema {
         if(instancia==null){
             instancia = new Cineart(id, nome, local);
         }
+        cinemaDAO.salvar(this);
         return instancia;
     }
 }

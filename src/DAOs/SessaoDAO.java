@@ -13,6 +13,9 @@ import java.util.Date;
 import static Main.Main.salaDAO;
 
 public class SessaoDAO implements MasterDAO<Sessao> {
+    public SessaoDAO(){
+        criarTabela();
+    }
 
     public void criarTabela() {
         try (Connection conexao = Conexao.obtemConexao();

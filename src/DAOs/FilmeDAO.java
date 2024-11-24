@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class FilmeDAO implements MasterDAO<Filme>{
+    public FilmeDAO(){
+        criarTabela();
+    }
 
     public void criarTabela() {
         try {

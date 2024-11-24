@@ -18,8 +18,11 @@ public class Main {
     public static SessaoDAO sessaoDAO;
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final ArrayList<Cinema> cinemas = cinemaDAO.buscarTodos();
-    private static final ArrayList<Filme> filmes = filmeDAO.buscarTodos();
+    //private static final ArrayList<Cinema> cinemas = cinemaDAO.buscarTodos();
+    //private static final ArrayList<Filme> filmes = filmeDAO.buscarTodos();
+
+    private static final ArrayList<Cinema> cinemas = new ArrayList<Cinema>();
+    private static final ArrayList<Filme> filmes = new ArrayList<Filme>();
 
     public static void main(String[] args) {
         int opcao;

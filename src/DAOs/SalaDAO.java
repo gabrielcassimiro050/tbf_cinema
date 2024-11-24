@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SalaDAO implements MasterDAO<Sala> {
+    public SalaDAO(){
+        criarTabela();
+    }
 
     public void criarTabela() {
         try (Connection conexao = Conexao.obtemConexao();

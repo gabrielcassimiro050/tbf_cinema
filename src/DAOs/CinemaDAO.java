@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CinemaDAO implements MasterDAO<Cinema> {
+    public CinemaDAO(){
+        criarTabela();
+    }
 
     @Override
     public void criarTabela() {
