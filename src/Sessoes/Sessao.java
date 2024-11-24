@@ -1,8 +1,12 @@
 package Sessoes;
 
+import Exceptions.IdExistenteException;
 import Salas.Sala;
 import Filmes.Filme;
 import java.util.Date;
+
+import static Main.Main.cinemaDAO;
+import static Main.Main.sessaoDAO;
 
 public class Sessao {
     private int id;
@@ -12,6 +16,9 @@ public class Sessao {
     private Date horarioFim; // Horário de término
 
     public Sessao(int id, Sala sala, Filme filme, Date data, Date horarioFim) {
+        if (sessaoDAO.buscarPorId(id) != null) {
+            throw new IdExistenteException("Já existe uma sessão com o ID " + id + ".");
+        }
         this.id = id;
         this.sala = sala;
         this.filme = filme;

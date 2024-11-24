@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static Salas.Sala.salaDAO;
+import static Main.Main.salaDAO;
 
 public class SessaoDAO implements MasterDAO<Sessao> {
 

@@ -1,19 +1,20 @@
 package Filmes;
-
-import Connections.Conexao;
 import DAOs.FilmeDAO;
-import DAOs.MasterDAO;
+import Exceptions.IdExistenteException;
 
-import java.sql.*;
-import java.util.ArrayList;
+import static Main.Main.cinemaDAO;
+import static Main.Main.filmeDAO;
+
 
 public class Filme {
     private int id;
     private String nome;
     private long duracao_s;
-    public static FilmeDAO filmeDAO;
 
     public Filme(int id, String nome, long duracao_s) {
+        if (filmeDAO.buscarPorId(id) != null) {
+            throw new IdExistenteException("Já existe um filme com o ID " + id + ".");
+        }
         this.id = id;
         this.nome = nome;
         this.duracao_s = duracao_s;

@@ -1,17 +1,16 @@
 package Cinemas;
-
-import DAOs.CinemaDAO;
 import Exceptions.IdExistenteException;
 import Exceptions.NomeDuplicadoException;
 import Salas.Sala;
 
 import java.util.ArrayList;
 
+import static Main.Main.cinemaDAO;
+
 public class Cinema {
     private int id;
     private String nome, local;
     private ArrayList<Sala> salas;
-    public static CinemaDAO cinemaDAO;
 
     public int getId() {
         return id;

@@ -2,6 +2,7 @@ package Salas;
 
 import Connections.Conexao;
 import DAOs.SalaDAO;
+import Exceptions.IdExistenteException;
 import Exceptions.SalaOcupadaException;
 import Filmes.Filme;
 import Sessoes.Sessao;
@@ -10,15 +11,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static Main.Main.cinemaDAO;
+import static Main.Main.salaDAO;
+
 public class Sala {
     private int id;
     private String nome;
     private int capacidade;
     private int id_cinema;
     private ArrayList<Sessao> sessoes;
-    public static SalaDAO salaDAO;
 
     public Sala(int id, String nome, int capacidade, int id_cinema) {
+        if (salaDAO.buscarPorId(id) != null) {
+            throw new IdExistenteException("Já existe uma sala com o ID " + id + ".");
+        }
         this.id = id;
         this.nome = nome;
         this.capacidade = capacidade;
