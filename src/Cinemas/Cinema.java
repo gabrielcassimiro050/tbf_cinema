@@ -24,10 +24,15 @@ public class Cinema {
         return local;
     }
 
+    public ArrayList<Sala> getSalas() {
+        return salas;
+    }
+
+    public void setSalas(ArrayList<Sala> salas) {
+        this.salas = salas;
+    }
+
     public Cinema(int id, String nome, String local) throws IdExistenteException {
-        if (cinemaDAO.buscarPorId(id) != null) {
-            throw new IdExistenteException("Já existe um cinema com o ID " + id + ".");
-        }
         this.id = id;
         this.nome = nome;
         this.local = local;

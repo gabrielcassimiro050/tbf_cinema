@@ -2,11 +2,16 @@ package DAOs;
 
 import Cinemas.Cinema;
 import Connections.Conexao;
+import Exceptions.IdExistenteException;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class CinemaDAO implements MasterDAO<Cinema> {
+
+    public CinemaDAO(){
+        criarTabela();
+    }
 
     @Override
     public void criarTabela() {
@@ -16,7 +21,7 @@ public class CinemaDAO implements MasterDAO<Cinema> {
             Statement stmt = conexao.createStatement();
             stmt.execute("CREATE TABLE IF NOT EXISTS cinemas (id INT PRIMARY KEY," +
                     "nome VARCHAR(255) NOT NULL," +
-                    "local VARCHAR(255) NOT NULL;");
+                    "local VARCHAR(255) NOT NULL);");
         } catch (SQLException e) {
             throw new Error(e.getMessage());
         }
@@ -38,6 +43,24 @@ public class CinemaDAO implements MasterDAO<Cinema> {
         } catch (SQLException e) {
             System.err.println("Erro ao salvar cinema: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public void existe(int id) throws IdExistenteException {
+        String sql = "SELECT * FROM cinemas WHERE id = ?";
+
+        try (Connection conn = Conexao.obtemConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                throw new IdExistenteException("ID já existe");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar cinema: " + e.getMessage());
         }
     }
 
@@ -91,6 +114,7 @@ public class CinemaDAO implements MasterDAO<Cinema> {
             stmt.setInt(3, objeto.getId());
             stmt.executeUpdate();
 
+            System.out.println("Atualizado com sucesso!");
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar cinema: " + e.getMessage());
         }
@@ -106,6 +130,7 @@ public class CinemaDAO implements MasterDAO<Cinema> {
             stmt.setInt(1, objeto.getId());
             stmt.executeUpdate();
 
+            System.out.println("Deletado com sucesso!");
         } catch (SQLException e) {
             System.err.println("Erro ao deletar cinema: " + e.getMessage());
         }

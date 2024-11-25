@@ -5,8 +5,7 @@ import Salas.Sala;
 import Filmes.Filme;
 import java.util.Date;
 
-import static Main.Main.cinemaDAO;
-import static Main.Main.sessaoDAO;
+import static Main.Main.*;
 
 public class Sessao {
     private int id;
@@ -15,10 +14,9 @@ public class Sessao {
     private Date data; // Horário de início
     private Date horarioFim; // Horário de término
 
-    public Sessao(int id, Sala sala, Filme filme, Date data, Date horarioFim) {
-        if (sessaoDAO.buscarPorId(id) != null) {
-            throw new IdExistenteException("Já existe uma sessão com o ID " + id + ".");
-        }
+
+    public Sessao(int id, Sala sala, Filme filme, Date data) {
+        Date horarioFim = new Date(data.getTime() + filme.getDuracao_s() * 1000);
         this.id = id;
         this.sala = sala;
         this.filme = filme;

@@ -11,7 +11,7 @@ public class Conexao {
     private static final String DB_HOST = "localhost";
     private static final String DB_NAME = "coltec";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "senhaSuperSegura";
+    private static final String DB_PASSWORD = "gm";
 
     private static Connection conexao = null;
 

@@ -11,8 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static Main.Main.cinemaDAO;
-import static Main.Main.salaDAO;
+import static Main.Main.*;
 
 public class Sala {
     private int id;
@@ -22,14 +21,15 @@ public class Sala {
     private ArrayList<Sessao> sessoes;
 
     public Sala(int id, String nome, int capacidade, int id_cinema) {
-        if (salaDAO.buscarPorId(id) != null) {
-            throw new IdExistenteException("Já existe uma sala com o ID " + id + ".");
-        }
         this.id = id;
         this.nome = nome;
         this.capacidade = capacidade;
         this.id_cinema = id_cinema;
         this.sessoes = new ArrayList<>();
+    }
+
+    public ArrayList<Sessao> getSessoes() {
+        return sessoes;
     }
 
     public int getId_cinema() {
@@ -62,38 +62,28 @@ public class Sala {
 
 
 
-    public void criarSessao(int id, Sala sala, Filme filme, Date data) throws SalaOcupadaException {
+    public void criarSessao(int id, Filme filme, Date data) throws SalaOcupadaException {
         Date horarioFim = new Date(data.getTime() + filme.getDuracao_s() * 1000);
         for (Sessao s : sessoes) {
-            if (data.before(s.getHorarioFim()) && horarioFim.after(s.getData())) {
+            if ((data.before(s.getHorarioFim()) || data.equals(s.getHorarioFim())) && (horarioFim.after(s.getData()) || horarioFim.equals(s.getData()))) {
                 throw new SalaOcupadaException("Horário da sessão conflitante com outra sessão na sala.");
             }
         }
 
-        Sessao sessao = new Sessao(id, sala, filme, data, horarioFim);
+        Sessao sessao = new Sessao(id, this, filme, data);
         sessoes.add(sessao);
+        sessaoDAO.salvar(sessao);
 
-        String sql = "INSERT INTO sessoes (id, sala_nome, filme_id, data, horario_fim) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = Conexao.obtemConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            stmt.setString(2, sala.getNome());
-            stmt.setInt(3, filme.getId());
-            stmt.setTimestamp(4, new Timestamp(data.getTime()));
-            stmt.setTimestamp(5, new Timestamp(horarioFim.getTime()));
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Erro ao criar sessão: " + e.getMessage());
-        }
     }
 
     public void listarSessoes() {
+        ArrayList<Sessao> sessoes = sessaoDAO.buscarTodos(id);
+
         if (sessoes.isEmpty()) {
             System.out.println("Não há sessões cadastradas.");
             return;
         }
+
         for (Sessao s : sessoes) {
             System.out.println(s.toString());
         }
@@ -101,6 +91,6 @@ public class Sala {
 
     @Override
     public String toString() {
-        return "Nome: " + nome + '\n' + "Capacidade: " + capacidade + '\n';
+        return "ID: " + id + '\n' + "Nome: " + nome + '\n' + "Capacidade: " + capacidade + '\n';
     }
 }

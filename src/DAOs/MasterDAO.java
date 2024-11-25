@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public interface MasterDAO<T> {
     T salvar(T objeto);
+    void existe(int id);
     T buscarPorId(int id);
     ArrayList<T> buscarTodos();
     void atualizar(T object);

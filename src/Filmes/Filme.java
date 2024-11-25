@@ -12,9 +12,6 @@ public class Filme {
     private long duracao_s;
 
     public Filme(int id, String nome, long duracao_s) {
-        if (filmeDAO.buscarPorId(id) != null) {
-            throw new IdExistenteException("Já existe um filme com o ID " + id + ".");
-        }
         this.id = id;
         this.nome = nome;
         this.duracao_s = duracao_s;
