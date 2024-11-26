@@ -2,15 +2,13 @@ package Main;
 
 import Cinemas.Cineart;
 import Cinemas.Cinema;
-import DAOs.CinemaDAO;
-import DAOs.FilmeDAO;
-import DAOs.SalaDAO;
-import DAOs.SessaoDAO;
+import DAOs.*;
 import Exceptions.IdExistenteException;
 import Exceptions.NaoExisteException;
 import Filmes.Filme;
 import Salas.Sala;
 import Sessoes.Sessao;
+import Vendas.Venda;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +21,7 @@ public class Main {
     public static FilmeDAO filmeDAO = new FilmeDAO();
     public static SalaDAO salaDAO = new SalaDAO();
     public static SessaoDAO sessaoDAO = new SessaoDAO();
+    public static VendaDAO vendaDAO = new VendaDAO();
 
     public static Cineart cineart;
 
@@ -40,6 +39,7 @@ public class Main {
             System.out.println("2. Gerenciar Filmes");
             System.out.println("3. Gerenciar Salas");
             System.out.println("4. Gerenciar Sessões");
+            System.out.println("4. Gerenciar Vendas");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -57,6 +57,9 @@ public class Main {
                     break;
                 case 4:
                     menuSessoes();
+                    break;
+                case 5:
+                    menuVendas();
                     break;
                 case 0:
                     System.out.println("Encerrando o sistema...");
@@ -551,4 +554,97 @@ public class Main {
         sessaoDAO.deletar(sessao);
     }
     //--------------------------------------------------------------------------------------
+
+    // Menu Vendas --------------------------------------------------------------------------------
+    private static void menuVendas() {
+        System.out.println("\n--- Gerenciar Vendas ---");
+        System.out.println("1. Realizar Venda");
+        System.out.println("2. Listar Vendas");
+        System.out.println("3. Deletar Venda");
+        System.out.println("0. Voltar");
+        System.out.print("Escolha uma opção: ");
+        int opcao = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (opcao) {
+            case 1:
+                realizarVenda();
+                break;
+            case 2:
+                listarVendas();
+                break;
+            case 3:
+                deletarVenda();
+                break;
+            case 0:
+                System.out.println("Voltando ao menu principal...");
+                break;
+            default:
+                System.out.println("Opção inválida!");
+                break;
+        }
+    }
+
+    // Função para realizar venda
+    private static void realizarVenda() {
+        System.out.print("Digite o ID da venda: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        try {
+            vendaDAO.existe(id);
+        } catch (IdExistenteException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.print("Digite o ID da sessão: ");
+        int idSessao = scanner.nextInt();
+        scanner.nextLine();
+
+        Sessao sessao = sessaoDAO.buscarPorId(idSessao);
+        try {
+            if (sessao == null) throw new NaoExisteException("Sessão não existe!");
+        } catch (NaoExisteException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.print("Digite a quantidade de ingressos: ");
+        int quantidade = scanner.nextInt();
+        scanner.nextLine();
+
+        Venda venda = new Venda(id, cinemaDAO.buscarPorId(sessao.getSala().getId_cinema()), sessao, quantidade);
+        vendaDAO.salvar(venda);
+        System.out.println("Venda realizada com sucesso!");
+    }
+
+    private static void listarVendas() {
+        ArrayList<Venda> vendas = vendaDAO.buscarTodos();
+        if (vendas.isEmpty()) {
+            System.out.println("Não há vendas registradas.");
+            return;
+        }
+
+        System.out.println("\n--- Lista de Vendas ---");
+        for (Venda venda : vendas) {
+            System.out.println(venda);
+        }
+    }
+
+    private static void deletarVenda() {
+        System.out.print("Digite o ID da venda: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Venda venda = vendaDAO.buscarPorId(id);
+        try {
+            if (venda == null) throw new NaoExisteException("Venda não existe!");
+            vendaDAO.deletar(venda);
+            System.out.println("Venda deletada com sucesso!");
+        } catch (NaoExisteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+// -
 }

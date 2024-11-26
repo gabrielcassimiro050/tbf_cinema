@@ -8,7 +8,6 @@ import Salas.Sala;
 import java.sql.*;
 import java.util.ArrayList;
 
-import static Main.Main.filmeDAO;
 
 public class FilmeDAO implements MasterDAO<Filme>{
 
